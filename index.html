@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Digital Learning Module</title>
+  <style>
+body {
+  position: relative;
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  background: url(imgs/bg.png) center fixed;
+  background-size: cover;
+  color: #fdfdfd;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55); /* затемнить посильнее */
+  backdrop-filter: blur(6px);
+  z-index: -1;
+}
+
+/* ===== Хедер ===== */
+header {
+  position: sticky; /* чтобы держался сверху */
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(30, 30, 60, 0.5); /* полупрозрачный тёмный */
+  backdrop-filter: blur(12px); /* размытие фона */
+  -webkit-backdrop-filter: blur(12px); /* поддержка Safari */
+
+  color: white;
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* лёгкая линия */
+  border-radius: 0 0 12px 12px; /* скругление снизу */
+}
+
+.header-left, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left img, .header-right img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+}
+
+/* Навигация */
+nav {
+  display: flex;
+  gap: 10px;
+}
+
+nav a {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: white;
+  color: #6C63FF;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+nav a:hover {
+  background: #FF6584; /* коралл */
+  color: white;
+}
+
+/* ===== Основной блок ===== */
+main { 
+  flex: 1;
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+  position: relative;
+}
+h2 { 
+  text-align: center; 
+  font-size: 28px; 
+  margin: 0 0 30px; 
+}
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 2x6 */
+  gap: 40px;
+  padding: 20px;
+  justify-items: center;
+  max-width: 1200px;
+  justify-content: center;
+}
+
+.lesson-block {
+  width: 200px;
+  text-align: center;
+}
+
+.lesson-main {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.lesson-overlay {
+  position: absolute;
+  inset: 0; /* растягиваем на всю карточку */
+  background: rgba(0, 0, 0, 0.4); /* затемнение */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+
+/* Подтемы */
+.subtopics {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.subtopic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+  background: linear-gradient(135deg, #6C63FF, #4CC9F0);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.subtopic:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #FF6584, #F9A826);
+}
+
+/* Контент */
+#lesson-content { display: none; position: relative; padding-bottom: 60px;/* родитель для абсолютного позиционирования */}
+#lesson-text {
+  background: rgba(255, 255, 255, 0.85); /* полупрозрачный белый */
+  backdrop-filter: blur(8px);            /* эффект стекла */
+  color: #2c2c2c;                        /* мягкий тёмно-серый текст */
+  padding: 10px 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  margin-top: 20px;
+  line-height: 1.7;
+  white-space: pre-line;
+  font-size: 17px;
+}
+#lesson-text h3, 
+#lesson-text h4 {
+  color: #3a3a3a; /* тот же фиолетовый, что в хедере */
+  margin-top: 20px;
+}
+#lesson-text ul li {
+  margin-bottom: 8px;
+}
+#lesson-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+#lesson-text table th, 
+#lesson-text table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+}
+#lesson-text table th {
+  background: #0055c4;
+  color: white;
+}
+
+/* Кнопка Назад */
+button.back-btn {
+  position: absolute;
+  bottom: 5px;
+  left: px;
+  background: linear-gradient(135deg, #4CAF50, #81C784);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  gap: 6px; /* отступ между стрелкой и текстом */
+}
+
+button.back-btn:hover {
+  background: linear-gradient(135deg, #388E3C, #66BB6A);
+}
+
+
+
+/* Адаптив */
+@media (max-width: 1024px) {
+  .lessons-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .lessons-grid {
+    grid-template-columns: 1fr;
+  }
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  nav {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+  }
+  nav a {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+
+
+/* ===== Футер ===== */
+footer {
+  background: rgba(30, 30, 60, 0.5); /* тёмный прозрачный */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px 12px 0 0; /* скругление сверху */
+}
+
+
+#lesson-text {
+  max-width: 100%;
+  overflow-x: auto;  /* если таблица слишком широкая */
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+#lesson-text table {
+  border-collapse: collapse;
+  margin: 15px auto; /* по центру */
+  width: auto;       /* ширина по содержимому */
+  max-width: 100%;   /* не выходить за границы экрана */
+}
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="imgs/cl1.jpeg" alt="Логотип 1" style="border-radius: 40px;">
+    <span>КГКП «Костанайский политехнический высший колледж» </span>
+  </div>
+  <nav>
+    <a href="#" onclick="openLesson('References', `
+  <ol><li>Edith Cowan University. (2025). Technology Advancements: The Pros and Cons. Retrieved from <a href=https://www.ecu.edu.au/study/technology-advancements>https://www.ecu.edu.au/study/technology-advancements</a></li><li>Wayground. (2025). Quiz on Reading Comprehension: Advantages and Disadvantages of Information Technology. Available at <a href=https://wayground.com/admin/quiz/68bb3a2efaa40fcd8a39ba6d>https://wayground.com/admin/quiz/68bb3a2efaa40fcd8a39ba6d</a></li><li>Azar, B. S., & Hagen, S. A. (2017). Understanding and Using English Grammar (5th ed.). Pearson Education</li><li>Merriam-Webster Dictionary. (2025). Definitions of technology-related terms. Retrieved from <a href=https://www.merriam-webster.com>https://www.merriam-webster.com</a></li><li>BBC Learning English. (2025). 6 Minute English: Can climate change affect our mental health? Retrieved from <a href=https://downloads.bbc.co.uk/learningenglish/features/6min/250612_6_minute_english_can_climate_change_affect_our_mental_health_download.mp3>https://downloads.bbc.co.uk/learningenglish/features/6min/250612_6_minute_english_can_climate_change_affect_our_mental_health_download.mp3</a></li><li>National Geographic. (2025). Climate Change Explained. Retrieved from <a href=https://www.youtube.com/watch?v=G4H1N_yXBiA>https://www.youtube.com/watch?v=G4H1N_yXBiA</a></li><li>Merriam-Webster Dictionary. (2025). Definitions of environmental and disaster-related terms. Retrieved from <a href=https://www.merriam-webster.com>https://www.merriam-webster.com</a></li><li>Kurzgesagt – In a Nutshell. (2021). Global Warming Explained [Video]. YouTube. <a href=https://www.youtube.com/watch?v=yiw6_JakZFc>https://www.youtube.com/watch?v=yiw6_JakZFc</a></li><li>NASA. (n.d.). The Causes of Climate Change. NASA Climate Change: Vital Signs of the Planet. <a href=https://climate.nasa.gov/causes/>https://climate.nasa.gov/causes/</a></li><li>United Nations. (n.d.). What is Climate Change? UN Climate Change. <a href=https://www.un.org/en/climatechange/what-is-climate-change>https://www.un.org/en/climatechange/what-is-climate-change</a></li><li>European Environment Agency. (n.d.). Climate Change Mitigation. EEA. <a href=https://www.eea.europa.eu/themes/climate/mitigation>https://www.eea.europa.eu/themes/climate/mitigation</a></li><li>Our World in Data. (n.d.). CO₂ and Other Greenhouse Gas Emissions. <a href=https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions>https://ourworldindata.org/co2-and-other-greenhouse-gas-emissions</a></li><li>Adapted educational text – Virtual Reality in Museums (учебная адаптация для студентов)</li><li>The Louvre. Online Tours. Retrieved from <a href=https://www.louvre.fr/en/online-tours>https://www.louvre.fr/en/online-tours</a></li><li>The Metropolitan Museum of Art. The Met 360° Project. Retrieved from <a href=https://www.metmuseum.org/art/online-features/met-360-project>https://www.metmuseum.org/art/online-features/met-360-project</a></li><li>Google Arts & Culture. Explore museums and exhibitions online. Retrieved from <a href=https://artsandculture.google.com/>https://artsandculture.google.com/</a></li><li>YouTube. (2016). A Plastic Ocean – Official Trailer. Retrieved from <a href=https://www.youtube.com/watch?v=6zrn4-FfbXw>https://www.youtube.com/watch?v=6zrn4-FfbXw</a></li><li>Listening Exercise: Plastic Recycling (Project 4 – Test 5, Ex. 4). Retrieved from <a href=https://english-practice.net/wp-content/uploads/2021/10/Project-4-test-5-45-ex4.mp3>https://english-practice.net/wp-content/uploads/2021/10/Project-4-test-5-45-ex4.mp3</a></li><li>TED-Ed. How playing an instrument benefits your brain (4:44 мин). <a href=https://youtu.be/R0JKCYZ8hng>https://youtu.be/R0JKCYZ8hng</a></li><li>British Council. Reported Speech <a href=https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/reported-speech>https://learnenglish.britishcouncil.org/grammar/english-grammar-reference/reported-speech</a>. Cambridge Dictionary. Reported Speech Explanation <a href=https://dictionary.cambridge.org/grammar/british-grammar/reported-speech>https://dictionary.cambridge.org/grammar/british-grammar/reported-speech</a></li><li>E-history.kz – Electronic History of Kazakhstan. <a href=https://e-history.kz/en/prominent-figures/show/12736>https://e-history.kz/en/prominent-figures/show/12736</a></li><li>Britannica. Kanysh Satpayev – Kazakh Geologist. Retrieved from <a href=https://www.britannica.com/biography/Kanysh-Satpayev>https://www.britannica.com/biography/Kanysh-Satpayev</a></li><li>Reduce Stress In 2 Minutes – YouTube <a href=https://www.youtube.com/watch?v=8IgMwbGnDcQ>https://www.youtube.com/watch?v=8IgMwbGnDcQ</a></li><li>Stress Management – American Psychological Association (APA) <a href=https://www.apa.org/topics/stress>https://www.apa.org/topics/stress</a></li><li>10 Stress Busters – NHS (UK National Health Service) <a href=https://www.nhs.uk/mental-health/self-help/tips-and-support/10-stress-busters>https://www.nhs.uk/mental-health/self-help/tips-and-support/10-stress-busters</a></li><li>Kurzgesagt – In a Nutshell. Explains the basics of nanotechnology, its applications, and potential risks. <a href=https://www.youtube.com/watch?v=dQhhcgn8YZo>https://www.youtube.com/watch?v=dQhhcgn8YZo</a></li><li>Official website presenting applications of nanotechnology in medicine, electronics, energy, and environment. <a href=https://www.nano.gov/about-nanotechnology/applications-nanotechnology>https://www.nano.gov/about-nanotechnology/applications-nanotechnology</a></li><li>Provides foundational knowledge about nanoparticles, nanostructures, and their unique properties. <a href=https://www.amazon.com/Basic-Principles-Nanotechnology-Wesley-Sanders/dp/1138483613>https://www.amazon.com/Basic-Principles-Nanotechnology-Wesley-Sanders/dp/1138483613</a></li><li>Covers synthesis, applications, benefits, and risks of nanomaterials in different industries. <a href=https://link.springer.com/book/10.1007/978-3-031-62627-2>https://link.springer.com/book/10.1007/978-3-031-62627-2</a></li><li>Discusses practical applications, advantages, and challenges of nanotechnology in medicine, electronics, and environmental protection. <a href=https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9865684/>https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9865684/</a></li><li><a href=https://www.youtube.com/watch?v=htjRUL3neMg>https://www.youtube.com/watch?v=htjRUL3neMg</a></li><li>Text prepared by teacher: Robotics: Applications, Benefits, and Challenges. Custom educational text for students covering applications in Industry, Healthcare, Service Sector, and Exploration, as well as benefits, challenges, and future prospects.</li><li>National Robotics Initiative (USA) – information about robotics applications and innovation: <a href=https://www.nsf.gov/robotics>https://www.nsf.gov/robotics</a></li><li>Robotics in Healthcare – examples of robots in medicine: <a href=https://ep.jhu.edu/news/robots-making-a-difference-in-healthcare>https://ep.jhu.edu/news/robots-making-a-difference-in-healthcare</a></li></ol>
+  `)">References</a>
+    <a href="#" onclick="openLesson('Content', `
+    <ul>
+      <li><b>Unit 1. IT: Pros and Cons</b><br>Lesson 1: Advantages and Disadvantages of Information Technology (2 hours)</li>
+      <li><b>Unit 2. Natural Disasters</b><br>Lesson 2: Environmental Issues and Natural Disasters in Kazakhstan (2 hours)<br>Lesson 3: Global Warming – Topic Vocabulary (2 hours)</li>
+      <li><b>Unit 3. Virtual Reality</b><br>Lesson 4: Virtual Reality Exhibitions – Exploring the Future (2 hours)</li>
+      <li><b>Unit 4. Mining and Environment</b><br>Lesson 5: Mining, Plastics, and the Environment (2 hours)</li>
+      <li><b>Unit 5. Reading for Pleasure</b><br>Lesson 6: A Scientific Video Review – Reported Speech (2 hours)</li>
+      <li><b>Unit 6. Electronics and Automation</b><br>Lesson 7: Kanysh Satbayev – Father of Kazakh Geology (2 hours)<br>Lesson 8: Giving Advice on How to Reduce Stress (Psychology) (2 hours)</li>
+      <li><b>Unit 7. Breakthrough Technologies</b><br>Lesson 9: Nanotechnology – Making a PPT (2 hours)<br>Lesson 10: Robotics (2 hours)</li>
+    </ul>
+  `)" >Content</a>
+
+  <a href="#" onclick="openLesson('Instructions', `
+    <ol>
+      <li>Выберите тему из списка уроков (L1, L2 и т.д.).</li>
+      <li>Прочитайте текст и выполните задания.</li>
+      <li>В конце урока нажмите кнопку, чтобы открыть таблицу дескрипторов и оценить результат.</li>
+    </ol>
+  `)" style="margin-left:auto;">Instructions</a>
+  </nav>
+  <div class="header-right">
+    <span>КГКП «Костанайский колледж сферы обслуживания»</span>
+    <img src="imgs/cl2.png" alt="Логотип 2" style= "border-radius: 30px;">
+  </div>
+</header>
+
+<main>
+  <div id="lessons-page">
+    <h2>Lessons</h2>
+    <div class="lessons-grid" id="lessons-container"></div>
+  </div>
+
+  <div id="lesson-content">
+    <h2 id="lesson-title">Lesson</h2>
+    <div id="lesson-text"></div>
+    <button class="back-btn" onclick="goBack()">⬅ Назад</button>
+  </div>
+</main>
+
+<footer>created by <span style="color: rgb(0, 0, 0); font-weight: 600;">Aigul Baibulatova</span></footer>
+
+<script>
+async function loadLessons() {
+  const res = await fetch("lessons.json");
+  const data = await res.json();
+  const container = document.getElementById("lessons-container");
+  container.innerHTML = "";
+
+  let lessonCounter = 1;
+
+  data.units.forEach((unit) => {
+    const block = document.createElement("div");
+    block.className = "lesson-block";
+
+    const mainBtn = document.createElement("div");
+mainBtn.className = "lesson-main";
+mainBtn.style.backgroundImage = `url(${unit.image})`;
+
+const overlay = document.createElement("div");
+overlay.className = "lesson-overlay";
+overlay.innerText = unit.title;
+
+mainBtn.appendChild(overlay);
+    // убираем onclick тут
+    block.appendChild(mainBtn);
+
+
+    if (unit.subtopics && unit.subtopics.length) {
+      const subWrap = document.createElement("div");
+      subWrap.className = "subtopics";
+
+      unit.subtopics.forEach((sub) => {
+        const subBtn = document.createElement("div");
+        subBtn.className = "subtopic";
+        subBtn.innerText = "L" + lessonCounter;
+        lessonCounter++;
+        subBtn.onclick = (e) => {
+          e.stopPropagation();
+          openLesson(sub.title, sub.content);
+        };
+        subWrap.appendChild(subBtn);
+      });
+
+      block.appendChild(subWrap);
+    }
+
+    container.appendChild(block);
+  });
+}
+
+function openLesson(title, content) {
+  document.getElementById('lessons-page').style.display = 'none';
+  document.getElementById('lesson-content').style.display = 'block';
+  document.getElementById('lesson-title').innerText = title;     // заголовок как текст
+  document.getElementById('lesson-text').innerHTML = content;    // контент как HTML
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+
+function goBack() {
+  document.getElementById("lesson-content").style.display = "none";
+  document.getElementById("lessons-page").style.display = "block";
+}
+
+loadLessons();
+</script>
+
+</body>
+</html>
